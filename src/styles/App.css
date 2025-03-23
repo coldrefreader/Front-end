@@ -1,0 +1,96 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.hidden {
+  display: none;
+}
+
+.warcraft-button:hover {
+  filter: brightness(1.2);
+  transform: scale(1.05);
+}
+
+.buttons {
+  transition: opacity 0.5s ease-in-out;
+}
+
+.video-bg {
+  position: fixed; /* Ensures full-screen coverage */
+  top: 50%;
+  left: 50%;
+  width: 100vw; /* Viewport width */
+  height: 100vh; /* Viewport height */
+  transform: translate(-50%, -50%); /* Centers the video perfectly */
+  object-fit: cover; /* Ensures no blank spaces */
+  z-index: -1000; /* Keeps it behind everything */
+}
+
+.back-button {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 20px 70px;
+  font-size: 1rem;
+  background: #003366;
+  color: yellow;
+  border: 2px solid #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1000; /* Ensures it stays above other elements */
+}
+
+.warcraft-button {
+  width: 340px;
+  height: 60px;
+  font-size: 18px;
+  font-weight: bold;
+  color: yellow;
+  background-color: #003366;
+  border: 2px solid gray;
+  border-radius: 8px;
+  text-shadow: 2px 2px 2px black;
+  box-shadow: inset 0px 0px 5px #000;
+  transition: all 0.2s ease-in-out;
+  margin-top: 40px; /* Moves each button down */
+}
+

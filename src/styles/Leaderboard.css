@@ -1,0 +1,91 @@
+.leaderboard-container {
+  text-align: center;
+  padding: 20px;
+  animation: drop-in 0.8s ease-out; /* Drop-in animation */
+  position: relative;
+}
+
+/* 🎭 Drop-in animation */
+@keyframes drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ⬇️ Drop-out animation when leaving */
+@keyframes drop-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+}
+
+/* 📌 Leaderboard table */
+.leaderboard-table {
+  width: 90%;
+  max-width: 1000px;
+  margin: auto;
+  border-collapse: collapse;
+}
+
+/* 🏆 Increase column width */
+.leaderboard-table th, .leaderboard-table td {
+  border: 1px solid #ddd;
+  padding: 15px 20px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* 🎨 Header Styling */
+.leaderboard-table th {
+  background-color: #003366;
+  color: yellow;
+  font-size: 1.1rem;
+}
+
+/* 🌟 Keep all rows black */
+.leaderboard-table tbody tr {
+  background-color: black !important;
+  color: white;
+  opacity: 0;
+  transform: translateY(-30px);
+  animation: slide-in 0.5s ease-out forwards;
+}
+
+/* ⏳ Delay per row for a cascading effect */
+.leaderboard-table tbody tr:nth-child(1) { animation-delay: 0.1s; }
+.leaderboard-table tbody tr:nth-child(2) { animation-delay: 0.2s; }
+.leaderboard-table tbody tr:nth-child(3) { animation-delay: 0.3s; }
+.leaderboard-table tbody tr:nth-child(4) { animation-delay: 0.4s; }
+
+/* 🏁 Slide-in animation for list */
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ✅ Top-ranked player is now also black */
+.leaderboard-table tbody tr:first-child {
+  font-weight: bold;
+  background-color: black !important;
+}
+
+/* ✅ Ensure leaderboard leaves but Back Button stays */
+.leaderboard-container.leaving {
+  animation: drop-out 0.8s ease-out forwards;
+}

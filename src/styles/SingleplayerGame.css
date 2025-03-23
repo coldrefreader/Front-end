@@ -1,0 +1,132 @@
+/* SingleplayerGame.css */
+@keyframes fadeInLeftToRight {
+  from {
+    opacity: 0;
+    transform: translateX(-5%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.game-container {
+  width: 80vw;
+  max-width: 1200px;
+  height: auto;
+  min-height: 100vh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  position: relative;
+  animation: fadeInLeftToRight 0.8s ease-in;
+}
+
+.fade-in {
+  animation: fadeInLeftToRight 0.8s ease-in;
+}
+
+/* Title at the top */
+.title {
+  position: on-screen;
+  top: 1vh;
+  font-size: 2em;
+  font-weight: bold;
+}
+
+/* Score Section */
+.score-container {
+  display: flex;
+  justify-content: space-between;
+  width: 90%;
+  position: absolute;
+  top: 10vh;
+}
+
+.player-score, .ai-score {
+  font-size: 2em;
+  padding: 6px 12px; /* Add padding for generous space */
+  background-color: rgba(0, 0, 0, 0.856); /* Semi-transparent background (0, 0, 0, 0.11); */
+  border-radius: 10px; /* Rounded corners */
+  color: white; /* Ensure text color is visible */
+}
+
+.player-score {
+  font-size: 2em;
+  color: rgb(74, 82, 196);
+}
+
+.ai-score {
+  font-size: 2em;
+  color: lightcoral;
+}
+
+/* Timer */
+.timer {
+  font-size: 2em;
+  font-weight: bold;
+  margin-top: 5vh;
+  color: yellow;
+}
+
+/* Question Box Styling */
+.question-container {
+  background: url("question-container.png") no-repeat center;
+  background-size: contain;
+  width: 60vw; /* Adjust the width to match the background image */
+  height: 30vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: yellow;
+  text-align: center;
+  margin-bottom: 4vh;
+}
+
+.question-container h2 {
+  font-size: 1.5rem; /* Adjust the font size as needed */
+  word-wrap: break-word; /* Ensure long words break to the next line */
+  max-width: 90%; /* Ensure text stays within the container */
+}
+
+/* Answer Buttons */
+.answer-container-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  width: 70%;
+}
+
+.answer-container {
+  background: url("answer-container.png") no-repeat center;
+  background-size: cover; /* Ensure full coverage */
+  flex: 1 1 40%;
+  max-width: 200px;
+  height: 12vh;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease-in-out;
+  outline: none; /* Remove default focus outline */
+}
+
+.answer-container:focus {
+  outline: none; /* Ensure focus outline is removed */
+}
+
+.answer-container:hover {
+  transform: scale(1.05);
+  filter: brightness(1.2);
+}

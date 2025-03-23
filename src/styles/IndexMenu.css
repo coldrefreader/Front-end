@@ -1,0 +1,18 @@
+.index-panel {
+    width: 500px;
+    height: 750px;
+    background: url("/wood-texture.png") no-repeat center center;
+    background-size: cover;
+    position: absolute;
+    right: 55px;
+    top: 5%;
+    border: 2px solid gray;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Keeps them centered */
+  }
+  
