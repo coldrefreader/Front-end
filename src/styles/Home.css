@@ -7,10 +7,10 @@
 
 /* Home.css */
 .home-container {
-    width: 500px;
-    height: 300px;
+    width: 365px;
+    height: 105px;
     position: fixed;
-    top: 200px;
+    top: 145px;
     right: 5px;
     background: url("home-container.png") no-repeat center center;
     background-size: cover;

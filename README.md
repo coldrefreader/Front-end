@@ -1,5 +1,7 @@
 # Front-end
 Hello everyone, this is the front-end of Quizaroth and also contains the chat server. 
+The instructions below are for Visual Studio Code and the localhosts are 5000 for the multiplayer chat and 5173 for the front-end.
+
 Once you're in the project, open 2 terminals - one for the server chat and the other for the main project. ( at least for me it did not allow me to have 1 terminal for both )
 
 For the server, commands are:

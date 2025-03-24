@@ -56,7 +56,7 @@ export default function Home() {
   };
 
   return (
-    <div className="home-container fade-in">
+    <div className="home-container">
       <h2>Welcome, {username || "Guest"}!</h2>
 
       {/* Header Section */}
@@ -69,6 +69,7 @@ export default function Home() {
 
       {/* Chatbox with username passed */}
       {username && <Chatbox username={username} />}
+
 
       {/* Logout Button */}
       <button className="back-button" onClick={handleLogout}>Logout</button>
