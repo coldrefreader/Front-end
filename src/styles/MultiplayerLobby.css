@@ -1,0 +1,39 @@
+.multiplayer-lobby {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 800px; /* Adjust as needed */
+    height: 400px; /* Adjust as needed */
+    background: url("question-container.png") no-repeat center;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+    right: 55px;
+    top: 5%;
+    border: 2px solid gray;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+  }
+  
+  .lobby-owner, .lobby-players {
+    margin: 20px 0;
+  }
+  
+  .lobby-button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background 0.3s;
+  }
+  
+  .lobby-button:hover {
+    background: #0056b3;
+  }

@@ -86,7 +86,7 @@
     background: url('ladder.png') no-repeat center, #003366; 
     background-size: contain;
     border: 2px solid gray;
-    width: 10vw; /* Slightly different size for the icon */
+    width: 6vw; /* Slightly different size for the icon */
   }
 
   /* Hides text inside button-3 */

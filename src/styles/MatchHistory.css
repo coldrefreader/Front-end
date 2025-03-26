@@ -89,4 +89,9 @@
     background-color: #002244;
     color: white;
   }
+
+  .match-history-container {
+    position: relative; /* Ensure it stays on top */
+    z-index: 10; /* Higher than the video */
+  }
   

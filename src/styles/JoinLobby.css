@@ -1,0 +1,97 @@
+.join-lobby-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  text-align: center;
+  color: white;
+  width: 320px;
+  transition: all 0.3s ease-in-out;
+}
+
+.lobby-container h2 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+}
+
+.lobby-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.lobby-list li {
+  background: #222;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.lobby-list li:hover {
+  background: #333;
+}
+
+.lobby-list li.selected {
+  background: #007bff;
+}
+
+.lobby-list li.full-lobby {
+  background: #444;
+  cursor: not-allowed;
+  color: #888;
+}
+
+.lobby-button {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.lobby-button:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
+.lobby-button:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+/* Scrollbar Styling */
+.lobby-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.lobby-list::-webkit-scrollbar-track {
+  background: #222;
+  border-radius: 10px;
+}
+
+.lobby-list::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 10px;
+}
+
+.lobby-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.join-lobby-panel {
+  position: relative; /* Ensure it stays on top */
+  z-index: 10; /* Higher than the video */
+}

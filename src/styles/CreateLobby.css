@@ -1,0 +1,50 @@
+.create-lobby-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 800px; /* Match the width of index-panel */
+  height: 400px; /* Match the height of index-panel */
+  background: url("question-container.png") no-repeat center;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  position: relative; /* Use absolute positioning */
+  right: 55px; /* Match the right position of index-panel */
+  top: 5%; /* Match the top position of index-panel */
+  border: 2px solid gray; /* Add border to match index-panel */
+  border-radius: 10px; /* Add border-radius to match index-panel */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5); /* Add box-shadow to match index-panel */
+  z-index: 100;
+}
+
+.lobby-id {
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+.lobby-button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.lobby-button:hover, .back-button:hover {
+  background: #0056b3;
+}
+
+.error-message {
+  color: red;
+  margin-top: 10px;
+}
+
+.create-lobby-panel {
+  position: relative; /* Ensure it stays on top */
+  z-index: 10; /* Higher than the video */
+}

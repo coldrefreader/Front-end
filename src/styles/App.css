@@ -62,7 +62,7 @@
   height: 100vh; /* Viewport height */
   transform: translate(-50%, -50%); /* Centers the video perfectly */
   object-fit: cover; /* Ensures no blank spaces */
-  z-index: -1000; /* Keeps it behind everything */
+  z-index: 0; /* Keeps it behind everything */
 }
 
 .back-button {

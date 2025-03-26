@@ -1,52 +1,33 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import "../styles/SingleplayerGame.css";
+import { useParams, useNavigate } from "react-router-dom";
+import { io } from "socket.io-client";
+import "../styles/MultiplayerGame.css";
 
-export default function SingleplayerGame() {
+export default function MultiplayerGame() {
+  const { lobbyId } = useParams();
   const navigate = useNavigate();
-  const [questions, setQuestions] = useState(null);
+  const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [playerScore, setPlayerScore] = useState(0);
-  const [aiScore, setAiScore] = useState(0);
-  const [timer, setTimer] = useState(25);
+  const [opponentScore, setOpponentScore] = useState(0);
+  const [timer, setTimer] = useState(20);
   const [gameOver, setGameOver] = useState(false);
-  const [difficulty, setDifficulty] = useState("medium");
-
-  const difficultyTimers = {
-    easy: 35,
-    medium: 25,
-    hard: 15,
-  };
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    let isMounted = true;
-    const urlParams = new URLSearchParams(window.location.search);
-    const extractedDifficulty = urlParams.get("difficulty")?.toLowerCase() || "medium";
+    const socket = io("http://localhost:5080");
+    setSocket(socket);
 
-    if (!difficultyTimers[extractedDifficulty]) {
-      console.warn("Invalid difficulty received:", extractedDifficulty, "Defaulting to 'medium'");
-    }
-
-    setDifficulty(difficultyTimers[extractedDifficulty] ? extractedDifficulty : "medium"); 
-    setTimer(difficultyTimers[extractedDifficulty] || 25);
-
-    const fetchQuestions = async () => {
-      try {
-        const response = await fetch("http://localhost:8080/v1/questions");
-        const data = await response.json();
-        if (data.length > 0 && isMounted) {
-          setQuestions(data);
-          setCurrentQuestionIndex(0);
-        }
-      } catch (error) {
-        console.error("Error fetching questions:", error);
-      }
-    };
-
-    fetchQuestions();
+    socket.on("gameState", (data) => {
+      setQuestions(data.questions);
+      setCurrentQuestionIndex(data.currentQuestionIndex);
+      setPlayerScore(data.playerScores["playerId"]); // Replace 'playerId' with actual player ID
+      setOpponentScore(data.playerScores["opponentId"]); // Replace 'opponentId' with actual opponent ID
+      setTimer(data.timer);
+    });
 
     return () => {
-      isMounted = false;
+      socket.disconnect();
     };
   }, []);
 
@@ -57,58 +38,30 @@ export default function SingleplayerGame() {
       }, 1000);
       return () => clearInterval(countdown);
     } else {
-      console.log("Timer reached 0. Auto-answering with null.");
       handleAnswer(null);
     }
   }, [timer]);
 
-  if (!questions) return <h2>Loading Questions...</h2>;
+  if (!questions.length) return <h2>Loading Questions...</h2>;
   if (gameOver) return <h2>Game Over! Redirecting...</h2>;
 
   const currentQuestion = questions[currentQuestionIndex];
 
-  const getAiAnswer = () => {
-    const difficultyChance = {
-      easy: 0.3,
-      medium: 0.55,
-      hard: 0.8,
-    };
-    return Math.random() < difficultyChance[difficulty];
-  };
-
   const handleAnswer = (selectedAnswer) => {
     if (!currentQuestion) return;
 
-    console.log("Full question object:", currentQuestion);
-
     const correctAnswerIndex = currentQuestion.correctAnswerIndex;
-    const correctAnswer = correctAnswerIndex !== undefined ? currentQuestion.choices[correctAnswerIndex] : undefined;
-    console.log("Extracted correct answer:", correctAnswer);
+    const correctAnswer = currentQuestion.choices[correctAnswerIndex];
 
-    const aiCorrect = getAiAnswer();
-    
-    if (selectedAnswer === correctAnswer) {
-      setPlayerScore((prev) => prev + 1);
-    }
-    if (aiCorrect) {
-      setAiScore((prev) => prev + 1);
-    }
+    const playerId = sessionStorage.getItem("userId");
+    socket.emit("answer", { playerId, answer: selectedAnswer });
 
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
-      setTimer(difficultyTimers[difficulty]);
+      setTimer(20);
     } else {
       setGameOver(true);
-      const matchResult = {
-        playerScore,
-        aiScore,
-        difficulty,
-        date: new Date().toLocaleString(),
-      };
-      const matchHistory = JSON.parse(localStorage.getItem("matchHistory")) || [];
-      matchHistory.push(matchResult);
-      localStorage.setItem("matchHistory", JSON.stringify(matchHistory));
-      setTimeout(() => navigate("/match-Result"), 1000);
+      setTimeout(() => navigate("/match-result"), 1000);
     }
   };
 
@@ -133,7 +86,7 @@ export default function SingleplayerGame() {
   return (
     <div className="game-container">
       <div className="title-container">
-        <h2 className="title">Singleplayer Mode</h2>
+        <h2 className="title">Multiplayer Mode</h2>
       </div>
       <div className="timer-container">
         <div className="timer-clock">
@@ -147,7 +100,7 @@ export default function SingleplayerGame() {
               strokeWidth="3"
               fill="none"
               strokeDasharray={Math.PI * 2 * 45}
-              strokeDashoffset={(timer / difficultyTimers[difficulty]) * Math.PI * 2 * 45}
+              strokeDashoffset={(timer / 20) * Math.PI * 2 * 45}
               style={{ transition: 'stroke-dashoffset 1s linear', transform: 'rotate(-90deg)', transformOrigin: '50% 50%' }}
             />
             <text x="50" y="55" textAnchor="middle" fill="white" fontSize="20">
@@ -158,7 +111,7 @@ export default function SingleplayerGame() {
       </div>
       <div className="score-container">
         <p className="player-score">Player: {playerScore}</p>
-        <p className="ai-score">AI: {aiScore}</p>
+        <p className="opponent-score">Opponent: {opponentScore}</p>
       </div>
       <div className="question-container">
         {currentQuestion ? (

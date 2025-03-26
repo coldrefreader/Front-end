@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const navigate = useNavigate();
   const [username, setUsername] = useState(null);
+  const [role, setRole] = useState(null);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -21,6 +22,7 @@ export default function Home() {
           const data = await response.json();
           console.log("User session found:", data);
           setUsername(data.username);
+          setRole(data.role);
           sessionStorage.setItem("username", data.username); // Store username
         } else {
           console.log("No session found, redirecting to index.");
@@ -65,11 +67,13 @@ export default function Home() {
         <button className="header-button button-2" onClick={() => navigate("/join-lobby")}>Join Lobby</button>
         <button className="header-button button-3" onClick={() => navigate("/leaderboard")}></button>
         <button className="header-button button-4" onClick={() => navigate("/profile")}>Profile</button>
+        {role === "ADMIN" && (
+          <button className="header-button button-5" onClick={() => navigate("/admin")}>Admin</button>
+        )}
       </div>
 
       {/* Chatbox with username passed */}
       {username && <Chatbox username={username} />}
-
 
       {/* Logout Button */}
       <button className="back-button" onClick={handleLogout}>Logout</button>
