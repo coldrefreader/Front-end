@@ -89,7 +89,32 @@
     width: 6vw; /* Slightly different size for the icon */
   }
 
-  /* Hides text inside button-3 */
-  .button-3 span {
-    display: none;
+    /* Ensure the icon remains visible on hover */
+  .button-3:hover {
+    background: url('ladder.png') no-repeat center, #004488;
+    background-size: contain;
+    transform: scale(1.05);
+  }
+
+  /* Tooltip for Leaderboard button */
+  .button-3::after {
+    content: "Leaderboard";
+    position: absolute;
+    bottom: -30px; /* Adjust as needed */
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease-in-out;
+    white-space: nowrap;
+    font-size: 0.8vw;
+  }
+
+  .button-3:hover::after {
+    opacity: 1;
+    visibility: visible;
   }

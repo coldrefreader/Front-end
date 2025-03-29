@@ -56,7 +56,7 @@ export default function MatchHistory() {
 
   if (!hasSession) return <h2>Redirecting to Index...</h2>;
   if (loading) return <h2>Loading Match History...</h2>;
-  if (!matches || matches.length === 0) return <h2>No match history available.</h2>;
+  if (!matches) return <h2>No match history available.</h2>;
 
   return (
     <>

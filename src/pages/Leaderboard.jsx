@@ -100,7 +100,7 @@ export default function Leaderboard() {
 
   if (!hasSession) return <h2>No session detected, redirecting to Index...</h2>;
   if (loading) return <h2>Loading Leaderboard...</h2>;
-  if (!leaderboard || leaderboard.length === 0) return <h2>No leaderboard data available.</h2>;
+  if (!leaderboard) return <h2>Loading Leaderboard...</h2>;
 
   return (
     <>

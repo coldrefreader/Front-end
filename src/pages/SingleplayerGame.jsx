@@ -133,7 +133,6 @@ export default function SingleplayerGame() {
   return (
     <div className="game-container">
       <div className="title-container">
-        <h2 className="title">Singleplayer Mode</h2>
       </div>
       <div className="timer-container">
         <div className="timer-clock">

@@ -27,6 +27,7 @@ export default function CreateLobby() {
         method: "POST",
         credentials: "include",
       });
+      
 
       if (response.ok) {
         const data = await response.json();

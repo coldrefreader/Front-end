@@ -6,7 +6,7 @@ import Index from "./pages/Index";
 import Singleplayer from "./pages/Singleplayer";
 import SingleplayerGame from "./pages/SingleplayerGame"; 
 import GameSession from "./pages/GameSession";
-import MatchResult from "./pages/MatchResult";
+import SingleplayerMatchResult from "./pages/SingleplayerMatchResult";
 import Options from "./pages/Options";
 import Multiplayer from "./pages/Multiplayer";
 import Register from "./pages/Register";
@@ -21,6 +21,7 @@ import CreateLobby from "./pages/CreateLobby";
 import JoinLobby from "./pages/JoinLobby";
 import MultiplayerLobby from "./components/MultiplayerLobby";
 import MultiplayerGame from "./components/MultiplayerGame";
+import MultiplayerMatchResult from "./components/MultiplayerMatchResult";
 
 function App() {
   return (
@@ -34,7 +35,7 @@ function App() {
           <Route path="/singleplayer" element={<Singleplayer />} />
           <Route path="/singleplayer-game" element={<SingleplayerGame />} />  {/* Add this */}
           <Route path="/game-session" element={<GameSession />} />
-          <Route path="/match-result" element={<MatchResult />} />
+          <Route path="/match-result" element={<SingleplayerMatchResult />} />
           <Route path="/options" element={<Options />} />
           <Route path="/multiplayer" element={<Multiplayer />} />
           <Route path="/register" element={<Register />} />
@@ -49,6 +50,7 @@ function App() {
           <Route path="/join-lobby" element={<JoinLobby />} /> 
           <Route path="/lobby/:lobbyId" element={<MultiplayerLobby />} />
           <Route path="/game/:lobbyId" element={<MultiplayerGame />} />
+          <Route path="/match-result/:matchId" element={<MultiplayerMatchResult />} />
         </Routes>
       </Router>
     </SettingsProvider>

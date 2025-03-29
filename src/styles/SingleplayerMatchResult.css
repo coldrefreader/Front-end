@@ -1,4 +1,4 @@
-.match-result-container {
+.singleplayer-match-result-container {
   padding: 20px;
   background-color: #003366;
   color: white;
@@ -9,7 +9,7 @@
   text-align: center;
 }
 
-.match-result-details {
+.singleplayer-match-result-details {
   border: 1px solid #ccc;
   padding: 10px;
   margin-bottom: 10px;
@@ -18,24 +18,18 @@
   border-radius: 5px;
 }
 
-.match-result-details p {
+.singleplayer-match-result-details p {
   margin: 5px 0;
 }
 
-.winner-container {
+.singleplayer-winner-container {
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 10px 0;
 }
 
-.crown-icon {
-  width: 30px;
-  height: 30px;
-  margin-right: 10px;
-}
-
-.home-button {
+.singleplayer-home-button {
   position: fixed;
   bottom: 20px;
   left: 20px;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import "../styles/MatchResult.css";
+import "../styles/SingleplayerMatchResult.css";
 
 // Animation Variants
 const panelVariants = {
@@ -38,13 +38,13 @@ export default function MatchResult() {
   return (
     <>
       <motion.div
-        className="match-result-container"
+        className="singleplayer-match-result-container"
         initial="enter"
         animate={isLeaving ? "exit" : "enter"}
         variants={panelVariants}
       >
         <h2>Match Result</h2>
-        <div className="match-result-details">
+        <div className="singleplayer-match-result-details">
           <p>Date: {matchResult.date}</p>
           <p>Difficulty: {matchResult.difficulty}</p>
           <p>Player Score: {matchResult.playerScore}</p>
@@ -54,7 +54,7 @@ export default function MatchResult() {
 
       {/* Home Button (Not inside animation) */}
       <div className="home-button-container">
-        <button className="home-button" onClick={handleHome}>Home</button>
+        <button className="singleplayer-home-button" onClick={handleHome}>Home</button>
       </div>
     </>
   );

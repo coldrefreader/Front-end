@@ -55,6 +55,11 @@ export default function Login() {
         const sessionData = await sessionResponse.json();
         console.log("✅ Session verified:", sessionData);
         sessionStorage.setItem("username", sessionData.username);
+        sessionStorage.setItem("userId", sessionData.userId);
+        console.log("Stored session data:", {
+          username: sessionStorage.getItem("username"),
+          userId: sessionStorage.getItem("userId")
+        });
       } else {
         console.error("❌ Failed to verify session");
       }

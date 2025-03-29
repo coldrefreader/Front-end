@@ -21,8 +21,14 @@ export default function MultiplayerLobby() {
   useEffect(() => {
     const socket = io("http://localhost:5080");
     setSocket(socket);
+
+    socket.on("lobbyClosed", () => {
+      alert("This lobby has been closed.");
+      navigate("/home");
+    });
   
     const storedUsername = sessionStorage.getItem("username"); // ✅ Retrieve username
+    const storedUserId = sessionStorage.getItem("userId"); // ✅ Retrieve userId
   
     if (!storedUsername) {
       console.error("❌ No username found in session storage.");
@@ -30,7 +36,7 @@ export default function MultiplayerLobby() {
     }
   
     console.log(`Joining lobby ${lobbyId} as ${storedUsername}`);
-    socket.emit("joinLobby", lobbyId, storedUsername); // ✅ Pass username correctly
+    socket.emit("joinLobby", lobbyId, storedUsername, storedUserId); // ✅ Pass username correctly
   
     socket.on("lobbyUpdate", (data) => {
       console.log("Lobby update received:", data);
@@ -39,9 +45,19 @@ export default function MultiplayerLobby() {
   
     socket.on("gameState", (gameState) => {
       console.log("Game state received:", gameState);
+      // Update the lobby state with the received game state
+      setLobby((prevLobby) => ({
+        ...prevLobby,
+        gameState: {
+          ...prevLobby.gameState,
+          ...gameState,
+          questions: gameState.questions, // Ensure questions are included
+        },
+      }));
       setIsLeaving(true);
       setTimeout(() => navigate(`/game/${lobbyId}`), 800);
     });
+    
   
     return () => {
       socket.disconnect();
@@ -49,17 +65,52 @@ export default function MultiplayerLobby() {
   }, [lobbyId, navigate]);
 
   const handleLeave = () => {
-    console.log("Leaving lobby...");
+    const storedUserId = sessionStorage.getItem("userId");
+    if (socket && storedUserId && lobbyId) {
+      socket.emit("leaveLobby", lobbyId, storedUserId);
+    }
     setIsLeaving(true);
-    setTimeout(() => navigate("/home"), 800); // Navigate to home page
+    setTimeout(() => navigate("/home"), 800);
   };
+  
 
   const handleStartGame = async () => {
     try {
       console.log("Starting game for lobby:", lobbyId);
+      // 1. Fetch the questions
       const response = await fetch("http://localhost:8080/v1/questions");
+      if (!response.ok) throw new Error("❌ Failed to fetch questions.");
       const questions = await response.json();
-
+      console.log("✅ Questions fetched:", questions);
+    
+      // 2. Create the game session via REST call
+      const storedUserId = sessionStorage.getItem("userId");
+      const storedUsername = sessionStorage.getItem("username");
+      if (!lobby || !lobby.players || lobby.players.length < 2) {
+        throw new Error("Opponent not available.");
+      }
+      // Assuming lobby.players is now an array of objects with userId and username.
+      const opponentId = lobby.players[1].userId; // Use the opponent's UUID
+    
+      const gameSessionPayload = {
+        player1Id: storedUserId,
+        player2Id: opponentId
+      };
+    
+      const sessionResponse = await fetch("http://localhost:8080/v1/game-sessions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(gameSessionPayload)
+      });
+      if (!sessionResponse.ok) throw new Error("❌ Failed to create game session.");
+      const sessionData = await sessionResponse.json();
+      console.log("✅ Game session created:", sessionData);
+      // Save the game session ID for later use (e.g., to fetch match results)
+      sessionStorage.setItem("gameSessionId", sessionData.gameSessionId);
+      socket.emit("storeGameSessionId", { lobbyId, gameSessionId: sessionData.gameSessionId });
+    
+      // 3. Start the game via socket by emitting the startGame event
       socket.emit("startGame", { lobbyId, questions });
     } catch (error) {
       console.error("⚠️ Error starting game:", error);
@@ -81,7 +132,7 @@ export default function MultiplayerLobby() {
 
       console.log("✅ Lobby disbanded");
       setIsLeaving(true);
-      setTimeout(() => navigate("/home"), 800); // Navigate to home page
+      setTimeout(() => navigate("/home"), 800);
     } catch (error) {
       console.error("⚠️ Error disbanding lobby:", error);
       setError(error.message);
@@ -102,7 +153,8 @@ export default function MultiplayerLobby() {
   }
 
   const storedUsername = sessionStorage.getItem("username");
-  const isOwner = lobby.owner === storedUsername;
+  const isOwner = lobby.owner.username === storedUsername;
+  sessionStorage.setItem("isOwner", isOwner ? "true" : "false");
 
   console.log("Current lobby state:", lobby);
   console.log("Is owner:", isOwner);
@@ -116,15 +168,16 @@ export default function MultiplayerLobby() {
     >
       <h2>Lobby {lobbyId}</h2>
       <div className="lobby-owner">
-        <p>Owner: {lobby.owner}</p>
+        <p>Owner: {lobby.owner.username}</p>
       </div>
       <div className="lobby-players">
         {lobby.players.length > 1 ? (
-          <p>Player: {lobby.players[1]}</p>
+          <p>Player: {lobby.players[1].username}</p>
         ) : (
           <p>Waiting for another player...</p>
         )}
       </div>
+
       <div className="button-container">
         {isOwner && (
           <>

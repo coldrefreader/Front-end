@@ -1,0 +1,25 @@
+.match-result-container {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .score-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+  }
+  
+  .player-score, .opponent-score {
+    font-size: 1.5em;
+  }
+  
+  .result {
+    font-size: 2em;
+    font-weight: bold;
+    color: green;
+  }
+  
+  .result.Defeat {
+    color: red;
+  }

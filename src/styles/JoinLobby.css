@@ -1,97 +1,107 @@
 .join-lobby-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
+  position: relative;
+  right: 55px; /* Match the right position of index-panel */
+  top: 5%; /* Match the top position of index-panel */
   transform: translate(-50%, -50%);
-  background: rgba(0, 0, 0, 0.8);
-  padding: 20px;
+  padding: 30px;
   border-radius: 12px;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
   text-align: center;
   color: white;
-  width: 320px;
-  transition: all 0.3s ease-in-out;
+  width: 90%; /* Increase width */
+  max-width: 1000px; /* Increase max-width */
+  height: 500px; /* Set a fixed height */
+  overflow: hidden; /* Prevent overflow */
 }
 
-.lobby-container h2 {
-  font-size: 1.8rem;
-  margin-bottom: 15px;
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: rgba(61, 60, 60, 0.9);
 }
 
-.lobby-list {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 20px 0;
-  max-height: 250px;
-  overflow-y: auto;
-}
-
-.lobby-list li {
-  background: #222;
+th, td {
   padding: 10px;
-  margin: 5px 0;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s;
+  border: 1px solid #ddd;
+  text-align: left;
 }
 
-.lobby-list li:hover {
-  background: #333;
+th {
+  background-color: #1d7cb3;
 }
 
-.lobby-list li.selected {
-  background: #007bff;
-}
-
-.lobby-list li.full-lobby {
+tr.full-lobby {
   background: #444;
-  cursor: not-allowed;
   color: #888;
 }
 
-.lobby-button {
-  display: block;
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0;
+tr.full-lobby td {
+  cursor: not-allowed;
+}
+
+tr.empty-slot {
+  height: 50px; /* Set a fixed height for empty slots */
+}
+
+button {
+  padding: 10px 20px; /* Increase padding */
+  cursor: pointer;
   background: #007bff;
   color: white;
   border: none;
   border-radius: 6px;
-  font-size: 1rem;
-  cursor: pointer;
   transition: background 0.3s;
 }
 
-.lobby-button:disabled {
+button:disabled {
   background: #555;
   cursor: not-allowed;
 }
 
-.lobby-button:hover:not(:disabled) {
+button:hover:not(:disabled) {
   background: #0056b3;
 }
 
-/* Scrollbar Styling */
-.lobby-list::-webkit-scrollbar {
-  width: 8px;
+.button-container {
+  margin-top: 20px;
 }
 
-.lobby-list::-webkit-scrollbar-track {
-  background: #222;
-  border-radius: 10px;
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
 
-.lobby-list::-webkit-scrollbar-thumb {
-  background: #444;
-  border-radius: 10px;
+.pagination button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  cursor: pointer;
 }
 
-.lobby-list::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
-
-.join-lobby-panel {
+.join-lobby-container {
   position: relative; /* Ensure it stays on top */
   z-index: 10; /* Higher than the video */
+}
+
+.back-button {
+  margin: 10px;
+  padding: 12px 25px;
+  font-size: 1.2rem;
+  background: #003366;
+  color: yellow;
+  border: 2px solid white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.back-button:hover {
+  background-color: #002244;
+  color: white;
+}
+
+/* 🔙 Back Button Container (outside animations) */
+.back-button-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
 }
