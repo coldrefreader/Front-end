@@ -64,16 +64,6 @@ export default function MultiplayerLobby() {
     };
   }, [lobbyId, navigate]);
 
-  const handleLeave = () => {
-    const storedUserId = sessionStorage.getItem("userId");
-    if (socket && storedUserId && lobbyId) {
-      socket.emit("leaveLobby", lobbyId, storedUserId);
-    }
-    setIsLeaving(true);
-    setTimeout(() => navigate("/home"), 800);
-  };
-  
-
   const handleStartGame = async () => {
     try {
       console.log("Starting game for lobby:", lobbyId);
@@ -117,6 +107,26 @@ export default function MultiplayerLobby() {
       setError(error.message);
     }
   };
+
+  const handleLeave = async () => {
+    const storedUserId = sessionStorage.getItem("userId");
+    // Option 1: Emit a socket event (if you're using socket-based state only)
+    if (socket && lobbyId && storedUserId) {
+      socket.emit("leaveLobby", lobbyId, storedUserId);
+    }
+    // Option 2: Also call the REST endpoint:
+    try {
+      await fetch(`http://localhost:8080/v1/lobbies/leave/${lobbyId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+    } catch (error) {
+      console.error("Error leaving lobby:", error);
+    }
+    setIsLeaving(true);
+    setTimeout(() => navigate("/home"), 800);
+  };
+  
 
   const handleDisbandLobby = async () => {
     try {

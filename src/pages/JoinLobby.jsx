@@ -69,16 +69,14 @@ export default function JoinLobby() {
       });
       if (!response.ok) throw new Error("❌ Failed to join lobby.");
       console.log("✅ Successfully joined lobby:", selectedLobby);
-      // Emit join event to update in-memory state.
-      const storedUsername = sessionStorage.getItem("username");
-      const storedUserId = sessionStorage.getItem("userId");
-      socket.emit("joinLobby", selectedLobby, storedUsername, storedUserId);
+      // Remove the extra socket.emit here if REST already handles joining.
       setIsLeaving(true);
       setTimeout(() => navigate(`/lobby/${selectedLobby}`), 800);
     } catch (error) {
       console.error("⚠️ Error joining lobby:", error);
     }
   };
+  
 
   const handleLeave = () => {
     setIsLeaving(true);
@@ -111,13 +109,12 @@ export default function JoinLobby() {
           <tbody>
             {filteredLobbies.map((lobby) => (
               <tr
-                key={lobby.lobbyId}
+                key={lobby.lobbyId} // Unique key
                 className={lobby.players.length === 2 ? "full-lobby" : ""}
                 onClick={() => setSelectedLobby(lobby.lobbyId)}
-                onDoubleClick={handleJoinLobby}
               >
-                <td>{lobby.owner.username}</td>
-                <td>{lobby.lobbyId}</td>
+                <td>{lobby.owner && lobby.owner.username ? lobby.owner.username : "No owner"}</td>
+                <td>{lobby.lobbyId || "N/A"}</td>
                 <td>
                   <button onClick={handleJoinLobby} disabled={lobby.players.length === 2}>
                     Join

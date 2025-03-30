@@ -65,8 +65,23 @@ io.on("connection", (socket) => {
         }
       }
     }
+    if (!lobbies[lobbyId].owner || !lobbies[lobbyId].owner.username) {
+      // Fallback: ensure the owner is set from the players array if possible.
+      const ownerCandidate = lobbies[lobbyId].players[0];
+      if (ownerCandidate) {
+        lobbies[lobbyId].owner = { ...ownerCandidate };
+      }
+    }
     console.log(`Lobby ${lobbyId} players after join:`, JSON.stringify(lobbies[lobbyId].players));
     io.to(lobbyId).emit("lobbyUpdate", { ...lobbies[lobbyId] });
+    Object.values(lobbies).forEach(lobby => {
+      if (!lobby.owner || !lobby.owner.username) {
+        // Fallback: use the first player as the owner if available.
+        if (lobby.players && lobby.players.length > 0) {
+          lobby.owner = lobby.players[0];
+        }
+      }
+    });
     io.emit("lobbyListUpdate", Object.values(lobbies));
     if (lobbies[lobbyId].gameState && lobbies[lobbyId].gameState.questions.length > 0) {
       socket.emit("gameState", lobbies[lobbyId].gameState);
@@ -118,9 +133,12 @@ io.on("connection", (socket) => {
       playerScores: scores,
     };
     // Optionally, mark the lobby as started to prevent disconnects from disbanding it.
+    // Mark the lobby as in-game so it’s not shown to new joiners.
     lobbies[lobbyId].gameStarted = true;
     io.to(lobbyId).emit("gameState", lobbies[lobbyId].gameState);
     console.log("✅ Game state sent:", lobbies[lobbyId].gameState);
+    // Remove from global list so join page doesn't show it.
+    io.emit("lobbyListUpdate", Object.values(lobbies).filter(l => !l.gameStarted));
   });
 
   // --- ANSWER HANDLER ---
