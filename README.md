@@ -1,5 +1,9 @@
 # Front-end
 Hello everyone, this is the front-end of Quizaroth and also contains the chat and multiplayer game server. 
+
+1. To access the main back-end project     -> https://github.com/coldrefreader/Quizaroth
+2. To access the leaderboard microservice  -> https://github.com/coldrefreader/Leaderboard-Service
+
 The instructions below are for Visual Studio Code and the localhosts are 5000 for the server ( chat and multiplayer ) and 5173 for the front-end.
 
 Once you're in the project, open 2 terminals - one for the server and the other for the main project. ( at least for me it did not allow me to have 1 terminal for both )

@@ -38,6 +38,7 @@ io.on("connection", (socket) => {
     if (!lobbies[lobbyId]) {
       // Create new lobby with this user as owner and add them to players.
       lobbies[lobbyId] = {
+        lobbyId,
         owner: { userId, username },
         players: [{ userId, username }],
         gameState: {
@@ -82,16 +83,28 @@ io.on("connection", (socket) => {
         }
       }
     });
+    
     io.emit("lobbyListUpdate", Object.values(lobbies));
+    console.log("Global lobby list update from joinLobby socket: {}", Object.values(lobbies));
     if (lobbies[lobbyId].gameState && lobbies[lobbyId].gameState.questions.length > 0) {
       socket.emit("gameState", lobbies[lobbyId].gameState);
     }
   });
 
+  socket.on("sendMessage", (messageData) => {
+    const { sender, message } = messageData;
+    if (!sender || !message) return; // Ignore invalid messages
+  
+    console.log(`Message received from ${sender}: ${message}`);
+    socket.broadcast.emit("receiveMessage", messageData);
+  });
+  
+
   // --- CREATE LOBBY HANDLER ---
   socket.on("createLobby", (lobbyId, ownerUsername, ownerUserId) => {
     console.log(`Lobby created: ${lobbyId} by ${ownerUsername} (${ownerUserId})`);
     lobbies[lobbyId] = {
+      lobbyId,
       owner: { userId: ownerUserId, username: ownerUsername },
       players: [{ userId: ownerUserId, username: ownerUsername }],
       gameState: {
@@ -102,6 +115,7 @@ io.on("connection", (socket) => {
       },
     };
     io.emit("lobbyListUpdate", Object.values(lobbies));
+    console.log("Global lobby list update from createLobby socket: {}", Object.values(lobbies));
   });
 
   // --- STORE GAME SESSION ID HANDLER ---
@@ -110,6 +124,7 @@ io.on("connection", (socket) => {
       lobbies[lobbyId].gameSessionId = gameSessionId;
       console.log(`Stored gameSessionId ${gameSessionId} for lobby ${lobbyId}`);
       io.emit("lobbyListUpdate", Object.values(lobbies));
+      console.log("Global lobby list update from storeGameSessionId socket: {}", Object.values(lobbies));
     }
   });
 
@@ -161,6 +176,7 @@ io.on("connection", (socket) => {
         io.to(lobbyId).emit("lobbyUpdate", { ...lobbies[lobbyId] });
       }
       io.emit("lobbyListUpdate", Object.values(lobbies));
+      console.log("Global lobby list update from leaveLobby socket: {}", Object.values(lobbies));
     }
   });
 
@@ -182,6 +198,7 @@ io.on("connection", (socket) => {
             io.to(lobbyId).emit("lobbyUpdate", { ...lobbies[lobbyId] });
           }
           io.emit("lobbyListUpdate", Object.values(lobbies));
+          console.log("Global lobby list update from disconnect handler: {}", Object.values(lobbies));
         }
         delete disconnectTimeouts[userId];
       }, 3000);
@@ -219,6 +236,18 @@ function handleAnswer(lobbyId, username, answer) {
     }
   }
 }
+
+// Periodic cleanup every 5 seconds.
+setInterval(() => {
+  Object.keys(lobbies).forEach(lobbyId => {
+    if (!lobbies[lobbyId].players || lobbies[lobbyId].players.length === 0) {
+      console.log(`Cleaning up empty lobby ${lobbyId}`);
+      delete lobbies[lobbyId];
+      io.emit("lobbyListUpdate", Object.values(lobbies));
+    }
+  });
+}, 5000);
+
 
 server.listen(5080, () => {
   console.log("Server running on http://localhost:5080");

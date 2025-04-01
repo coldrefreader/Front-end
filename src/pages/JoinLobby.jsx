@@ -31,6 +31,7 @@ export default function JoinLobby() {
 
     socketInstance.on("lobbyListUpdate", (updatedLobbies) => {
       console.log("Updated lobby list received:", updatedLobbies);
+      console.log("Socket update - lobby list received:", JSON.stringify(updatedLobbies, null, 2));
       setLobbies(updatedLobbies);
     });
 
@@ -42,6 +43,7 @@ export default function JoinLobby() {
         });
         if (!response.ok) throw new Error("❌ Failed to fetch lobbies.");
         const data = await response.json();
+        console.log("Fetched lobbies from REST:", JSON.stringify(data, null, 2));
         setLobbies(data);
       } catch (error) {
         console.error("⚠️ Error fetching lobbies:", error);
