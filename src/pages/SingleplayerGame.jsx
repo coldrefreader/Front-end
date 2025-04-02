@@ -78,30 +78,38 @@ export default function SingleplayerGame() {
 
   const handleAnswer = (selectedAnswer) => {
     if (!currentQuestion) return;
-
+  
     console.log("Full question object:", currentQuestion);
-
+  
     const correctAnswerIndex = currentQuestion.correctAnswerIndex;
-    const correctAnswer = correctAnswerIndex !== undefined ? currentQuestion.choices[correctAnswerIndex] : undefined;
+    const correctAnswer =
+      correctAnswerIndex !== undefined ? currentQuestion.choices[correctAnswerIndex] : undefined;
     console.log("Extracted correct answer:", correctAnswer);
-
+  
     const aiCorrect = getAiAnswer();
-    
+  
+    // Calculate new scores synchronously.
+    let newPlayerScore = playerScore;
+    let newAiScore = aiScore;
+  
     if (selectedAnswer === correctAnswer) {
-      setPlayerScore((prev) => prev + 1);
+      newPlayerScore++;
+      setPlayerScore(newPlayerScore);
     }
     if (aiCorrect) {
-      setAiScore((prev) => prev + 1);
+      newAiScore++;
+      setAiScore(newAiScore);
     }
-
+  
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
       setTimer(difficultyTimers[difficulty]);
     } else {
       setGameOver(true);
+      // Use the computed new scores for the final match result.
       const matchResult = {
-        playerScore,
-        aiScore,
+        playerScore: newPlayerScore,
+        aiScore: newAiScore,
         difficulty,
         date: new Date().toLocaleString(),
       };
@@ -111,6 +119,7 @@ export default function SingleplayerGame() {
       setTimeout(() => navigate("/match-Result"), 1000);
     }
   };
+  
 
   const splitText = (text, length) => {
     const words = text.split(' ');

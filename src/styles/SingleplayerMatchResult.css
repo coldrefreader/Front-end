@@ -1,12 +1,12 @@
 .singleplayer-match-result-container {
-  padding: 20px;
+  padding: 30px;
   background-color: #003366;
   color: white;
-  border-radius: 10px;
+  border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   max-width: 600px;
-  margin: 0 auto;
   text-align: center;
+
 }
 
 .singleplayer-match-result-details {
@@ -41,4 +41,9 @@
   border-radius: 5px;
   cursor: pointer;
   z-index: 1000; /* Ensures it stays above other elements */
+}
+
+.singleplayer-match-result-container {
+  position: relative; /* Ensure it stays on top */
+  z-index: 10; /* Higher than the video */
 }

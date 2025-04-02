@@ -3,12 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import "../styles/SingleplayerMatchResult.css";
 
-// Animation Variants
+// Animation Variants: Entry is now instant (no movement) so the container is centered at load.
 const panelVariants = {
-  enter: { y: ["-100%", "10%", "0%"], transition: { duration: 1, ease: [0.6, 0.07, 0.78, 0.335] } },
+  enter: { y: "0%", transition: { duration: 0 } },
   exit: { y: ["0%", "5%", "-150%"], transition: { duration: 0.8, ease: "easeIn" } },
-  selected: { y: ["0%", "5%", "-200%"], transition: { duration: 1.5, ease: [0.6, 0.07, 0.78, 0.335] } },
-  fade: { opacity: 0, transition: { duration: 0.7, ease: "easeOut" } }
 };
 
 export default function MatchResult() {
@@ -35,6 +33,14 @@ export default function MatchResult() {
 
   if (!matchResult) return <h2>Loading Match Result...</h2>;
 
+  // Determine the outcome based on the scores.
+  const outcome =
+    matchResult.playerScore > matchResult.aiScore
+      ? "Victory"
+      : matchResult.playerScore < matchResult.aiScore
+      ? "Defeat"
+      : "Draw";
+
   return (
     <>
       <motion.div
@@ -43,7 +49,7 @@ export default function MatchResult() {
         animate={isLeaving ? "exit" : "enter"}
         variants={panelVariants}
       >
-        <h2>Match Result</h2>
+        <h2>{outcome}</h2>
         <div className="singleplayer-match-result-details">
           <p>Date: {matchResult.date}</p>
           <p>Difficulty: {matchResult.difficulty}</p>
@@ -54,7 +60,9 @@ export default function MatchResult() {
 
       {/* Home Button (Not inside animation) */}
       <div className="home-button-container">
-        <button className="singleplayer-home-button" onClick={handleHome}>Home</button>
+        <button className="singleplayer-home-button" onClick={handleHome}>
+          Home
+        </button>
       </div>
     </>
   );

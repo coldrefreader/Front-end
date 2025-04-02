@@ -1,6 +1,11 @@
-.match-result-container {
+  .match-result-container {
+    padding: 30px;
+    background-color: #003366;
+    color: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
     text-align: center;
-    padding: 20px;
   }
   
   .score-container {
@@ -23,3 +28,53 @@
   .result.Defeat {
     color: red;
   }
+
+  .singleplayer-match-result-container {
+    padding: 30px;
+    background-color: #003366;
+    color: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 600px;
+    text-align: center;
+  }
+  
+  .singleplayer-match-result-details {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f0f0f0;
+    color: #333;
+    border-radius: 5px;
+  }
+  
+  .singleplayer-match-result-details p {
+    margin: 5px 0;
+  }
+  
+  .singleplayer-winner-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0;
+  }
+  
+  .singleplayer-home-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    padding: 20px 70px;
+    font-size: 1rem;
+    background: #003366;
+    color: yellow;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 1000; /* Ensures it stays above other elements */
+  }
+  
+  .singleplayer-match-result-container {
+    position: relative; /* Ensure it stays on top */
+    z-index: 10; /* Higher than the video */
+  }
+  
