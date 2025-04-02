@@ -14,16 +14,16 @@ export default function MultiplayerGame() {
   const [gameOver, setGameOver] = useState(false);
   const [socket, setSocket] = useState(null);
   const [hasAnswered, setHasAnswered] = useState(false);
+  const [selectedAnswer, setSelectedAnswer] = useState(null); // New state for selected answer
+  const [hostName, setHostName] = useState("");      // New state for host name
+  const [opponentName, setOpponentName] = useState(""); // New state for opponent name
 
-  // Client-side answer submission; note: we do NOT advance the question here.
+  // Client-side answer submission
   const handleAnswer = (selectedAnswer) => {
     const currentQuestion = questions[currentQuestionIndex];
     if (!currentQuestion) {
       console.error("⚠️ No current question available!");
       return;
-    }
-    if (!currentQuestion) {
-      console.error("No current question available for index:", currentQuestionIndex);
     }
     const storedUsername = sessionStorage.getItem("username");
     if (!storedUsername) {
@@ -34,46 +34,57 @@ export default function MultiplayerGame() {
       console.log("Already answered for this question.");
       return;
     }
-    setHasAnswered(true); // Prevent further submissions for this question
-
+    setHasAnswered(true);
+    setSelectedAnswer(selectedAnswer); // Store the selected answer
     console.log(`📡 Sending answer: ${selectedAnswer || "No answer"} from ${storedUsername}`);
     socket.emit("answer", { lobbyId, username: storedUsername, answer: selectedAnswer || "No Answer" });
   };
 
   // Socket initialization and game state updates
   useEffect(() => {
-    const socket = io("http://localhost:5080");
-    setSocket(socket);
+    const socketInstance = io("http://localhost:5080");
+    setSocket(socketInstance);
 
     const storedUserId = sessionStorage.getItem("userId");
     const storedUsername = sessionStorage.getItem("username");
-    console.log("Retrieved userId:", storedUserId);
     if (!storedUserId || !storedUsername) {
       console.error("⚠️ User ID or Username not found in sessionStorage!");
       return;
     }
 
-    socket.emit("joinLobby", lobbyId, storedUsername, storedUserId);
+    socketInstance.emit("joinLobby", lobbyId, storedUsername, storedUserId);
 
-    socket.on("gameState", (data) => {
+    socketInstance.on("gameState", (data) => {
       console.log("📡 Game State Updated:", data);
       if (data.questions && data.questions.length > 0) {
-        console.log("Questions received:", data.questions);
         setQuestions(data.questions);
       } else {
         console.error("No questions received in game state.");
       }
       setCurrentQuestionIndex(data.currentQuestionIndex);
       setPlayerScore(data.playerScores[storedUsername] || 0);
-      const opponentKey = Object.keys(data.playerScores).find((key) => key !== storedUsername);
+      
+      // Determine opponent key from playerScores (assuming exactly two players)
+      const keys = Object.keys(data.playerScores);
+      const opponentKey = keys.find((key) => key !== storedUsername) || "";
       setOpponentScore(data.playerScores[opponentKey] || 0);
+      
+      // Determine host and opponent names based on the isOwner flag.
+      const isOwner = sessionStorage.getItem("isOwner") === "true";
+      if (isOwner) {
+        setHostName(storedUsername);
+        setOpponentName(opponentKey);
+      } else {
+        setHostName(opponentKey);
+        setOpponentName(storedUsername);
+      }
+      
       setTimer(data.timer);
       setHasAnswered(false);
+      setSelectedAnswer(null); // Reset selected answer for the next question
     });
-    
 
-    // Listen for game over event
-    socket.on("gameOver", (finalState) => {
+    socketInstance.on("gameOver", (finalState) => {
       console.log("📡 Game Over received:", finalState);
       setGameOver(true);
       if (finalState.gameSessionId) {
@@ -81,40 +92,35 @@ export default function MultiplayerGame() {
       }
       const gameSessionId = sessionStorage.getItem("gameSessionId");
       const finalGameStatePayload = {
-        playerScores: finalState.playerScores
+        playerScores: finalState.playerScores,
       };
-    
-      // Only the owner should finalize
       const isOwner = sessionStorage.getItem("isOwner") === "true";
       if (isOwner && gameSessionId) {
         fetch(`http://localhost:8080/v1/game-sessions/finalise/${gameSessionId}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           credentials: "include",
-          body: JSON.stringify(finalGameStatePayload)
+          body: JSON.stringify(finalGameStatePayload),
         })
-          .then(res => res.json())
-          .then(data => {
+          .then((res) => res.json())
+          .then((data) => {
             console.log("✅ Game finalized:", data);
             setTimeout(() => navigate(`/match-result/${data.gameSessionId}`), 1000);
           })
-          .catch(err => console.error("Finalization error:", err));
+          .catch((err) => console.error("Finalization error:", err));
       } else {
         setTimeout(() => {
           navigate(`/match-result/${gameSessionId}`);
         }, 2000);
       }
     });
-    
-    
-    // Optionally, also listen for a "gameSessionFinalized" event:
-    socket.on("gameSessionFinalized", (data) => {
+
+    socketInstance.on("gameSessionFinalized", (data) => {
       console.log("Game session finalized broadcast received:", data);
       sessionStorage.setItem("gameSessionId", data.gameSessionId);
     });
 
-    // Cleanup on unmount
-    return () => socket.disconnect();
+    return () => socketInstance.disconnect();
   }, [lobbyId, navigate]);
 
   // Timer countdown useEffect
@@ -154,8 +160,6 @@ export default function MultiplayerGame() {
 
   return (
     <div className="multiplayer-game-container">
-      <div className="title-container">
-      </div>
       <div className="timer-container">
         <div className="timer-clock">
           <svg width="200" height="200" viewBox="0 0 100 100">
@@ -178,8 +182,8 @@ export default function MultiplayerGame() {
         </div>
       </div>
       <div className="score-container">
-        <p className="player-score">Host: {playerScore}</p>
-        <p className="opponent-score">Opponent: {opponentScore}</p>
+        <p className="player-score">{hostName || "Host"}: {playerScore}</p>
+        <p className="opponent-score">{opponentName || "Opponent"}: {opponentScore}</p>
       </div>
       <div className="question-container">
         {currentQuestion ? (
@@ -189,11 +193,20 @@ export default function MultiplayerGame() {
         )}
       </div>
       <div className="answer-container-wrapper">
-        {currentQuestion?.choices.map((choice, index) => (
-          <button key={index} className="answer-container" onClick={() => handleAnswer(choice)}>
-            {choice}
-          </button>
-        ))}
+        {currentQuestion?.choices.map((choice, index) => {
+          const isSelected = selectedAnswer !== null;
+          const hideButton = isSelected && choice !== selectedAnswer;
+          return (
+            <button
+              key={index}
+              className={`answer-container ${hideButton ? "hidden" : ""}`}
+              onClick={() => handleAnswer(choice)}
+              disabled={isSelected && !hideButton}  // disable if an answer is already selected
+            >
+              {choice}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

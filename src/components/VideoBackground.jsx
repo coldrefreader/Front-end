@@ -10,37 +10,35 @@ export default function VideoBackground() {
     if (!video) return;
 
     let retryInterval;
-    let timeoutId;
 
     const attemptPlay = () => {
       if (animationsEnabled && video.paused) {
-        video.loop = true; // Ensure loop is set
+        video.loop = true;
         const playPromise = video.play();
         if (playPromise !== undefined) {
           playPromise
             .then(() => {
-              console.log("Retried play(): Video is playing; paused:", video.paused);
+              console.log("Video is playing; paused:", video.paused);
             })
             .catch((err) => {
-              console.error("Retried play() error:", err);
+              console.error("Error playing video:", err);
             });
-        } else {
-          console.log("play() returned undefined on retry");
         }
+      } else if (!animationsEnabled && !video.paused) {
+        // Pause the video if animations are disabled
+        video.pause();
       }
     };
 
     // Delay the first play attempt slightly
     const initialDelay = setTimeout(() => {
       attemptPlay();
-      // Set an interval to retry if the video is still paused
       retryInterval = setInterval(attemptPlay, 500);
     }, 100);
 
     return () => {
       clearTimeout(initialDelay);
       clearInterval(retryInterval);
-      clearTimeout(timeoutId);
     };
   }, [animationsEnabled]);
 
