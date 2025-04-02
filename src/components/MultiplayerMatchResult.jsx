@@ -49,8 +49,8 @@ export default function MultiplayerMatchResult() {
         <div className="singleplayer-match-result-details">
           <p>Date: {matchResult.date}</p>
           {matchResult.difficulty && <p>Difficulty: {matchResult.difficulty}</p>}
-          <p>Player 1 Score: {matchResult.player1Score}</p>
-          <p>Player 2 Score: {matchResult.player2Score}</p>
+          <p>Host : {matchResult.player1Score}</p>
+          <p>Opponent : {matchResult.player2Score}</p>
         </div>
       </motion.div>
       

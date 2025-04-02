@@ -178,7 +178,7 @@ export default function MultiplayerGame() {
         </div>
       </div>
       <div className="score-container">
-        <p className="player-score">Player: {playerScore}</p>
+        <p className="player-score">Host: {playerScore}</p>
         <p className="opponent-score">Opponent: {opponentScore}</p>
       </div>
       <div className="question-container">
