@@ -1,4 +1,4 @@
-  .match-result-container {
+  .multiplayer-match-result-container {
     padding: 30px;
     background-color: #003366;
     color: white;
@@ -29,17 +29,8 @@
     color: red;
   }
 
-  .singleplayer-match-result-container {
-    padding: 30px;
-    background-color: #003366;
-    color: white;
-    border-radius: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    max-width: 600px;
-    text-align: center;
-  }
   
-  .singleplayer-match-result-details {
+  .multiplayer-match-result-details {
     border: 1px solid #ccc;
     padding: 10px;
     margin-bottom: 10px;
@@ -48,18 +39,18 @@
     border-radius: 5px;
   }
   
-  .singleplayer-match-result-details p {
+  .multiplayer-match-result-details p {
     margin: 5px 0;
   }
   
-  .singleplayer-winner-container {
+  .multiplayer-winner-container {
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 10px 0;
   }
   
-  .singleplayer-home-button {
+  .multiplayer-home-button {
     position: fixed;
     bottom: 20px;
     left: 20px;
@@ -73,7 +64,7 @@
     z-index: 1000; /* Ensures it stays above other elements */
   }
   
-  .singleplayer-match-result-container {
+  .multiplayer-match-result-container {
     position: relative; /* Ensure it stays on top */
     z-index: 10; /* Higher than the video */
   }
