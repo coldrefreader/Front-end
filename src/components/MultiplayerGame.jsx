@@ -62,27 +62,23 @@ export default function MultiplayerGame() {
         console.error("No questions received in game state.");
       }
       setCurrentQuestionIndex(data.currentQuestionIndex);
+    
+      const storedUsername = sessionStorage.getItem("username");
       setPlayerScore(data.playerScores[storedUsername] || 0);
       
-      // Determine opponent key from playerScores (assuming exactly two players)
-      const keys = Object.keys(data.playerScores);
-      const opponentKey = keys.find((key) => key !== storedUsername) || "";
+      // Determine opponent key (assuming exactly two players)
+      const opponentKey = Object.keys(data.playerScores).find((key) => key !== storedUsername) || "";
       setOpponentScore(data.playerScores[opponentKey] || 0);
-      
-      // Determine host and opponent names based on the isOwner flag.
-      const isOwner = sessionStorage.getItem("isOwner") === "true";
-      if (isOwner) {
-        setHostName(storedUsername);
-        setOpponentName(opponentKey);
-      } else {
-        setHostName(opponentKey);
-        setOpponentName(storedUsername);
-      }
-      
+    
+      // Set the labels based solely on the logged-in username
+      setHostName(storedUsername);
+      setOpponentName(opponentKey);
+    
       setTimer(data.timer);
       setHasAnswered(false);
       setSelectedAnswer(null); // Reset selected answer for the next question
     });
+    
 
     socketInstance.on("gameOver", (finalState) => {
       console.log("📡 Game Over received:", finalState);
