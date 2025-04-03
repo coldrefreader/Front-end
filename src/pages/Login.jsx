@@ -21,36 +21,42 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
-  
     if (!username) newErrors.username = "Username is required";
     if (!password) newErrors.password = "Password is required";
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-  
+
     try {
       const response = await fetch("http://localhost:8080/v1/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
-        credentials: "include", // ✅ Ensures session cookies are sent
+        credentials: "include",
       });
-  
+
+      const data = await response.json();
+
       if (!response.ok) {
-        const data = await response.json();
-        setErrors({ server: data.message || "Login failed" });
+        if (data.errors) {
+          // If errors is an object, use it directly. If it's a string, assign to server.
+          setErrors(typeof data.errors === "object" ? data.errors : { server: data.errors });
+        } else if (data.message) {
+          setErrors({ server: data.message });
+        } else {
+          setErrors({ server: "Login failed" });
+        }
         return;
       }
-  
+
       console.log("✅ Login successful!");
-  
-      // ✅ Verify the session by calling /me
+      // Verify session via /me endpoint.
       const sessionResponse = await fetch("http://localhost:8080/v1/auth/me", {
         method: "GET",
         credentials: "include",
       });
-  
+
       if (sessionResponse.ok) {
         const sessionData = await sessionResponse.json();
         console.log("✅ Session verified:", sessionData);
@@ -58,12 +64,12 @@ export default function Login() {
         sessionStorage.setItem("userId", sessionData.userId);
         console.log("Stored session data:", {
           username: sessionStorage.getItem("username"),
-          userId: sessionStorage.getItem("userId")
+          userId: sessionStorage.getItem("userId"),
         });
       } else {
         console.error("❌ Failed to verify session");
       }
-  
+
       setIsLeaving(true);
       setTimeout(() => navigate("/home"), 800);
     } catch (error) {
@@ -72,11 +78,10 @@ export default function Login() {
     }
   };
 
-  // Animation Variants (Same as Multiplayer)
   const panelVariants = {
     enter: { y: ["-100%", "10%", "0%"], transition: { duration: 1, ease: [0.5, 0.07, 0.78, 0.335] } },
     exit: { y: ["0%", "5%", "-150%"], transition: { duration: 0.8, ease: "easeIn" } },
-    fade: { opacity: 0, transition: { duration: 0.7, ease: "easeOut" } }
+    fade: { opacity: 0, transition: { duration: 0.7, ease: "easeOut" } },
   };
 
   return (
@@ -108,7 +113,7 @@ export default function Login() {
             />
             {errors.password && <p className="error">{errors.password}</p>}
           </div>
-          {errors.server && <p className="error">{errors.server}</p>} {/* Display server error */}
+          {errors.server && <p className="error">{errors.server}</p>}
           <button type="submit" className="warcraft-button">Login</button>
         </form>
       </motion.div>

@@ -22,7 +22,7 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = {};
-  
+    
     if (!username) {
       newErrors.username = "Username is required";
     }
@@ -32,44 +32,48 @@ export default function Register() {
     if (password !== confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
-  
+    
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-  
+    
     try {
       const response = await fetch("http://localhost:8080/v1/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username,
-          password,
-          confirmPassword }),
+        body: JSON.stringify({ username, password, confirmPassword }),
       });
-  
-      const data = await response.json(); // Parse response
-  
+    
+      const data = await response.json();
+    
       if (!response.ok) {
         if (data.errors) {
-          // Set field-specific errors
-          setErrors(data.errors);
+          // If errors is an object, use it directly; if it’s a string, assign it under 'server'
+          if (typeof data.errors === "object") {
+            setErrors(data.errors);
+          } else {
+            setErrors({ server: data.errors });
+          }
+        } else if (data.message) {
+          setErrors({ server: data.message });
         } else {
-          // Set a generic error if no field-specific errors are provided
-          setErrors({ server: data.message || "Registration failed" });
+          setErrors({ server: "Registration failed" });
         }
         return;
       }
-  
+    
       console.log("Registration successful:", data);
-      setIsLeaving(true); // Animate exit panel
-      setTimeout(() => navigate("/login"), 800); // Redirect to login page after animation
-  
+      setIsLeaving(true);
+      setTimeout(() => navigate("/login"), 800);
+    
     } catch (error) {
       console.error("Error registering:", error);
       setErrors({ server: "Something went wrong. Please try again." });
     }
   };
+  
+  
 
   // Animation Variants (Same as Multiplayer)
   const panelVariants = {
