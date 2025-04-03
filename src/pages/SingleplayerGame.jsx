@@ -140,7 +140,7 @@ export default function SingleplayerGame() {
   };
 
   return (
-    <div className="game-container">
+    <div className="singleplayer-game-container">
       <div className="title-container">
       </div>
       <div className="timer-container">
@@ -164,7 +164,7 @@ export default function SingleplayerGame() {
           </svg>
         </div>
       </div>
-      <div className="score-container">
+      <div className="singleplayer-score-container">
         <p className="player-score">Player: {playerScore}</p>
         <p className="ai-score">AI: {aiScore}</p>
       </div>

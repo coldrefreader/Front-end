@@ -34,7 +34,7 @@
     justify-content: space-between;
     width: 90%;
     position: absolute;
-    top: 10vh;
+    top: 5vh;
   }
   
   .player-score, .opponent-score {

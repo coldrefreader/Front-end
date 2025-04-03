@@ -10,7 +10,7 @@
   }
 }
 
-.game-container {
+.singleplayer-game-container {
   width: 80vw;
   max-width: 1200px;
   height: auto;
@@ -39,12 +39,12 @@
 }
 
 /* Score Section */
-.score-container {
+.singleplayer-score-container {
   display: flex;
   justify-content: space-between;
-  width: 90%;
+  width: 50%;
   position: absolute;
-  top: 10vh;
+  top: 15vh;
 }
 
 .player-score, .ai-score {
