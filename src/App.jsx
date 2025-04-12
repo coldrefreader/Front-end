@@ -22,6 +22,7 @@ import JoinLobby from "./pages/JoinLobby";
 import MultiplayerLobby from "./components/MultiplayerLobby";
 import MultiplayerGame from "./components/MultiplayerGame";
 import MultiplayerMatchResult from "./components/MultiplayerMatchResult";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -51,6 +52,8 @@ function App() {
           <Route path="/lobby/:lobbyId" element={<MultiplayerLobby />} />
           <Route path="/game/:lobbyId" element={<MultiplayerGame />} />
           <Route path="/match-result/:matchId" element={<MultiplayerMatchResult />} />
+          {/* Catch all unmatched routes */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </SettingsProvider>
