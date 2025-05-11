@@ -22,17 +22,25 @@ export default function SingleplayerGame() {
     let isMounted = true;
     const urlParams = new URLSearchParams(window.location.search);
     const extractedDifficulty = urlParams.get("difficulty")?.toLowerCase() || "medium";
+    const extractedCategory  = urlParams.get("category")   || "WARCRAFT";
 
     if (!difficultyTimers[extractedDifficulty]) {
-      console.warn("Invalid difficulty received:", extractedDifficulty, "Defaulting to 'medium'");
+      console.warn(
+        "Invalid difficulty received:",
+        extractedDifficulty,
+        "Defaulting to 'medium'"
+      );
     }
 
-    setDifficulty(difficultyTimers[extractedDifficulty] ? extractedDifficulty : "medium"); 
+    // apply extracted values
+    setDifficulty(extractedDifficulty);
     setTimer(difficultyTimers[extractedDifficulty] || 25);
 
     const fetchQuestions = async () => {
       try {
-        const response = await fetch("http://localhost:8080/v1/questions");
+        const response = await fetch(
+          `http://localhost:8080/v1/questions?category=${extractedCategory}`
+        );
         const data = await response.json();
         if (data.length > 0 && isMounted) {
           setQuestions(data);
@@ -78,20 +86,18 @@ export default function SingleplayerGame() {
 
   const handleAnswer = (selectedAnswer) => {
     if (!currentQuestion) return;
-  
-    console.log("Full question object:", currentQuestion);
-  
+
     const correctAnswerIndex = currentQuestion.correctAnswerIndex;
     const correctAnswer =
-      correctAnswerIndex !== undefined ? currentQuestion.choices[correctAnswerIndex] : undefined;
-    console.log("Extracted correct answer:", correctAnswer);
-  
+      correctAnswerIndex !== undefined
+        ? currentQuestion.choices[correctAnswerIndex]
+        : undefined;
+
     const aiCorrect = getAiAnswer();
-  
-    // Calculate new scores synchronously.
+
     let newPlayerScore = playerScore;
     let newAiScore = aiScore;
-  
+
     if (selectedAnswer === correctAnswer) {
       newPlayerScore++;
       setPlayerScore(newPlayerScore);
@@ -100,33 +106,33 @@ export default function SingleplayerGame() {
       newAiScore++;
       setAiScore(newAiScore);
     }
-  
+
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
       setTimer(difficultyTimers[difficulty]);
     } else {
       setGameOver(true);
-      // Use the computed new scores for the final match result.
       const matchResult = {
         playerScore: newPlayerScore,
         aiScore: newAiScore,
         difficulty,
         date: new Date().toLocaleString(),
       };
-      const matchHistory = JSON.parse(localStorage.getItem("matchHistory")) || [];
+      const matchHistory = JSON.parse(
+        localStorage.getItem("matchHistory") || '[]'
+      );
       matchHistory.push(matchResult);
       localStorage.setItem("matchHistory", JSON.stringify(matchHistory));
       setTimeout(() => navigate("/match-Result"), 1000);
     }
   };
-  
 
   const splitText = (text, length) => {
-    const words = text.split(' ');
+    const words = text.split(" ");
     let lines = [];
-    let currentLine = '';
+    let currentLine = "";
 
-    words.forEach(word => {
+    words.forEach((word) => {
       if ((currentLine + word).length <= length) {
         currentLine += `${word} `;
       } else {
@@ -136,13 +142,12 @@ export default function SingleplayerGame() {
     });
 
     lines.push(currentLine.trim());
-    return lines.join('<br>');
+    return lines.join("<br>");
   };
 
   return (
     <div className="singleplayer-game-container">
-      <div className="title-container">
-      </div>
+      <div className="title-container"></div>
       <div className="timer-container">
         <div className="timer-clock">
           <svg width="200" height="200" viewBox="0 0 100 100">
@@ -155,8 +160,13 @@ export default function SingleplayerGame() {
               strokeWidth="3"
               fill="none"
               strokeDasharray={Math.PI * 2 * 45}
-              strokeDashoffset={(timer / difficultyTimers[difficulty]) * Math.PI * 2 * 45}
-              style={{ transition: 'stroke-dashoffset 1s linear', transform: 'rotate(-90deg)', transformOrigin: '50% 50%' }}
+              strokeDashoffset={(timer / difficultyTimers[difficulty]) *
+                Math.PI * 2 * 45}
+              style={{
+                transition: "stroke-dashoffset 1s linear",
+                transform: "rotate(-90deg)",
+                transformOrigin: "50% 50%",
+              }}
             />
             <text x="50" y="55" textAnchor="middle" fill="white" fontSize="20">
               {timer}s
@@ -170,14 +180,20 @@ export default function SingleplayerGame() {
       </div>
       <div className="question-container">
         {currentQuestion ? (
-          <h2 dangerouslySetInnerHTML={{ __html: splitText(currentQuestion.text, 40) }}></h2>
+          <h2
+            dangerouslySetInnerHTML={{ __html: splitText(currentQuestion.text, 40) }}
+          ></h2>
         ) : (
           <p>No question found</p>
         )}
       </div>
       <div className="answer-container-wrapper">
         {currentQuestion?.choices.map((choice, index) => (
-          <button key={index} className="answer-container" onClick={() => handleAnswer(choice)}>
+          <button
+            key={index}
+            className="answer-container"
+            onClick={() => handleAnswer(choice)}
+          >
             {choice}
           </button>
         ))}

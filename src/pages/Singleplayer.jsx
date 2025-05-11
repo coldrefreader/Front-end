@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/App.css";
 import "../styles/Singleplayer.css";
@@ -9,7 +9,15 @@ import BackButton from "../components/BackButton";
 export default function Singleplayer() {
   const [isLeaving, setIsLeaving] = useState(false);
   const [selectedDifficulty, setSelectedDifficulty] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState("WARCRAFT");
+  const [showCategory, setShowCategory] = useState(false);
   const navigate = useNavigate();
+
+  // Reveal category selector after intro
+  useEffect(() => {
+    const timer = setTimeout(() => setShowCategory(true), 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Difficulty settings with time per question
   const difficulties = [
@@ -24,12 +32,13 @@ export default function Singleplayer() {
   };
 
   const handleSelect = (index) => {
-    console.log("Selected difficulty:", difficulties[index]); // Debugging
+    console.log("Selected difficulty:", difficulties[index], "Category:", selectedCategory);
     setSelectedDifficulty(index);
     const { label, time } = difficulties[index];
     setTimeout(() => {
-      console.log("Navigating to game...");
-      navigate(`/singleplayer-game?difficulty=${label.toLowerCase()}&timer=${time}`);
+      navigate(
+        `/singleplayer-game?difficulty=${label.toLowerCase()}&category=${selectedCategory}`
+      );
     }, 1500);
   };
 
@@ -42,7 +51,28 @@ export default function Singleplayer() {
   };
 
   return (
-    <div className="menu-container">
+    <div className="menu-container-singleplayer">
+      {showCategory && selectedDifficulty === null && !isLeaving &&(
+        <motion.div
+          className="category-selector"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div
+            className={`category-panel ${selectedCategory === "WARCRAFT" ? "selected" : ""}`}
+            onClick={() => setSelectedCategory("WARCRAFT")}
+          >
+            <img src="/WC.png" alt="Warcraft" className="category-image" />
+          </div>
+          <div
+            className={`category-panel ${selectedCategory === "STARBLO" ? "selected" : ""}`}
+            onClick={() => setSelectedCategory("STARBLO")}
+          >
+            <img src="/Starblo.png" alt="StarCraft + Diablo" className="category-image" />
+          </div>
+        </motion.div>
+      )}
       <motion.div 
         className="panel singleplayer-panel"
         variants={panelVariants}
@@ -55,7 +85,13 @@ export default function Singleplayer() {
               key={index} 
               className="difficulty-panel"
               variants={panelVariants}
-              animate={selectedDifficulty === index ? "selected" : selectedDifficulty !== null ? "fade" : "enter"}
+              animate={
+                selectedDifficulty === index 
+                  ? "selected" 
+                  : selectedDifficulty !== null 
+                  ? "fade" 
+                  : "enter"
+              }
             >
               <motion.button
                 className={difficulty.className}
